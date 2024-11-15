@@ -12,3 +12,26 @@ test('list users', function () {
 
     expect($result)->toBeArray();
 });
+
+test('list users per get', function () {
+    User::factory()->create();
+
+    (new TestController)->index();
+
+    $this->getJson('/users')->assertStatus(200);
+});
+
+
+test('list users per get with username', function () {
+    User::factory()->create([
+        'name' => 'testuser',
+    ]);
+
+    (new TestController)->index();
+
+    $this->getJson('/users')
+        ->assertStatus(200)
+        ->assertJson([
+            ['name' => 'testuser'],
+        ]);
+});
